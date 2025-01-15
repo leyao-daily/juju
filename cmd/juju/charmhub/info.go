@@ -28,6 +28,9 @@ To see channels supported for only a specific base, use the --base flag.
 --base can be specified using the OS name and the version of the OS, 
 separated by @. For example, --base ubuntu@22.04.
 
+Use --revision to display information about a specific revision of the charm.
+The --revision flag must be used together with --channel.
+For example: --channel stable --revision 42
 `
 	infoExamples = `
     juju info postgresql
@@ -52,8 +55,8 @@ type infoCommand struct {
 	config        bool
 	channel       string
 	charmOrBundle string
-
-	unicode string
+	revision      int
+	unicode       string
 }
 
 // Info returns help related info about the command, it implements
@@ -82,6 +85,7 @@ func (c *infoCommand) SetFlags(f *gnuflag.FlagSet) {
 	f.StringVar(&c.base, "base", "", "specify a base")
 	f.StringVar(&c.channel, "channel", "", "specify a channel to use instead of the default release")
 	f.BoolVar(&c.config, "config", false, "display config for this charm")
+	f.IntVar(&c.revision, "revision", -1, "specify a revision number")
 	f.StringVar(&c.unicode, "unicode", "auto", "display output using unicode <auto|never|always>")
 	c.out.AddFlags(f, "tabular", map[string]cmd.Formatter{
 		"yaml":    cmd.FormatYaml,
@@ -161,6 +165,8 @@ func (c *infoCommand) Run(cmdContext *cmd.Context) error {
 			return errors.Trace(err)
 		}
 		options = append(options, charmhub.WithInfoChannel(charmChannel.String()))
+	} else if c.revision != -1 {
+		return errors.New("--revision requires --channel to be specified")
 	}
 
 	info, err := client.Info(ctx, c.charmOrBundle, options...)
@@ -170,7 +176,7 @@ func (c *infoCommand) Run(cmdContext *cmd.Context) error {
 		return errors.Trace(err)
 	}
 
-	view, err := convertInfoResponse(info, c.arch, base)
+	view, err := convertInfoResponse(info, c.arch, c.revision, base)
 	if err != nil {
 		return errors.Trace(err)
 	}

@@ -20,7 +20,7 @@ import (
 	"github.com/juju/juju/internal/charmhub/transport"
 )
 
-func convertInfoResponse(info transport.InfoResponse, arch string, base corebase.Base) (InfoResponse, error) {
+func convertInfoResponse(info transport.InfoResponse, arch string, channelRevision int, base corebase.Base) (InfoResponse, error) {
 	ir := InfoResponse{
 		Type:        string(info.Type),
 		ID:          info.ID,
@@ -51,7 +51,7 @@ func convertInfoResponse(info transport.InfoResponse, arch string, base corebase
 	}
 
 	var err error
-	ir.Tracks, ir.Channels, err = filterChannels(info.ChannelMap, arch, base)
+	ir.Tracks, ir.Channels, err = filterChannels(info.ChannelMap, arch, channelRevision, base)
 	if err != nil {
 		return ir, errors.Trace(err)
 	}
@@ -301,7 +301,7 @@ func formatRelationPart(r map[string]charm.Relation) (map[string]string, bool) {
 // filterChannels returns channel map data in a format that facilitates
 // determining track order and open vs closed channels for displaying channel
 // data. The result is filtered on base and arch.
-func filterChannels(channelMap []transport.InfoChannelMap, arch string, base corebase.Base) ([]string, RevisionsMap, error) {
+func filterChannels(channelMap []transport.InfoChannelMap, arch string, channelRevision int, base corebase.Base) ([]string, RevisionsMap, error) {
 	var trackList []string
 
 	tracksSeen := set.NewStrings()
@@ -317,6 +317,10 @@ func filterChannels(channelMap []transport.InfoChannelMap, arch string, base cor
 		if !tracksSeen.Contains(ch.Track) {
 			tracksSeen.Add(ch.Track)
 			trackList = append(trackList, ch.Track)
+		}
+
+		if channelRevision != -1 && cm.Revision.Revision != channelRevision {
+			continue
 		}
 
 		platforms := convertBasesToPlatforms(cm.Revision.Bases)
