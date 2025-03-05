@@ -15,19 +15,20 @@ const (
 )
 
 type InfoResponse struct {
-	Type        string       `json:"type" yaml:"type"`
-	ID          string       `json:"id" yaml:"id"`
-	Name        string       `json:"name" yaml:"name"`
-	Description string       `json:"description" yaml:"description"`
-	Publisher   string       `json:"publisher" yaml:"publisher"`
-	Summary     string       `json:"summary" yaml:"summary"`
-	Supports    []Base       `json:"supports,omitempty" yaml:"supports,omitempty"`
-	StoreURL    string       `json:"store-url" yaml:"store-url"`
-	Tags        []string     `json:"tags,omitempty" yaml:"tags,omitempty"`
-	Charm       *Charm       `json:"charm,omitempty" yaml:"charm,omitempty"`
-	Bundle      *Bundle      `json:"bundle,omitempty" yaml:"bundle,omitempty"`
-	Channels    RevisionsMap `json:"channels" yaml:"channels"`
-	Tracks      []string     `json:"tracks,omitempty" yaml:"tracks,omitempty"`
+	Type            string       `json:"type" yaml:"type"`
+	ID              string       `json:"id" yaml:"id"`
+	Name            string       `json:"name" yaml:"name"`
+	Description     string       `json:"description" yaml:"description"`
+	Publisher       string       `json:"publisher" yaml:"publisher"`
+	Summary         string       `json:"summary" yaml:"summary"`
+	Supports        []Base       `json:"supports,omitempty" yaml:"supports,omitempty"`
+	StoreURL        string       `json:"store-url" yaml:"store-url"`
+	Tags            []string     `json:"tags,omitempty" yaml:"tags,omitempty"`
+	Charm           *Charm       `json:"charm,omitempty" yaml:"charm,omitempty"`
+	Bundle          *Bundle      `json:"bundle,omitempty" yaml:"bundle,omitempty"`
+	Channels        RevisionsMap `json:"channels" yaml:"channels"`
+	Tracks          []string     `json:"tracks,omitempty" yaml:"tracks,omitempty"`
+	NotFoundMessage string       `json:"-" yaml:"-"`
 }
 
 // RevisionsMap is a map of tracks to risks to list of revisions, for example

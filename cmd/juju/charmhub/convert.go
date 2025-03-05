@@ -55,6 +55,15 @@ func convertInfoResponse(info transport.InfoResponse, arch string, risk charm.Ri
 	if err != nil {
 		return ir, errors.Trace(err)
 	}
+
+	if len(ir.Tracks) == 0 && len(ir.Channels) == 0 {
+		if ir.Charm != nil {
+			ir.Charm.Relations = nil
+		}
+
+		ir.NotFoundMessage = fmt.Sprintf("No charms have been published%s", buildFilterMessage(arch, risk, revision, track, base))
+	}
+
 	return ir, nil
 }
 
@@ -395,4 +404,35 @@ func convertBasesToPlatforms(in []transport.Base) []corecharm.Platform {
 		}
 	}
 	return out
+}
+
+// buildFilterMessage constructs a user-friendly message describing the filters applied
+func buildFilterMessage(arch string, risk charm.Risk, revision int, track string, base corebase.Base) string {
+	var filters []string
+
+	if arch != "" && arch != ArchAll {
+		filters = append(filters, fmt.Sprintf("for architecture %q", arch))
+	}
+
+	if !base.Empty() {
+		filters = append(filters, fmt.Sprintf("for base %q", base))
+	}
+
+	if revision != -1 {
+		filters = append(filters, fmt.Sprintf("for revision %d", revision))
+	}
+
+	if risk != "" {
+		filters = append(filters, fmt.Sprintf("for risk %q", risk))
+	}
+
+	if track != "" {
+		filters = append(filters, fmt.Sprintf("in track %q", track))
+	}
+
+	if len(filters) == 0 {
+		return ""
+	}
+
+	return " " + strings.Join(filters, " and ")
 }
