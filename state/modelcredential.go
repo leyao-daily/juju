@@ -23,7 +23,7 @@ func (st *State) InvalidateModelCredential(reason string) error {
 		return errors.Trace(err)
 	}
 
-	tag, exists := m.CloudCredentialTag()
+	tag, exists := m.CloudCredentialTagOld()
 	if !exists {
 		// Model is on the cloud that does not require auth - nothing to do.
 		return nil
