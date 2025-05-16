@@ -3,7 +3,7 @@
   <source media="(prefers-color-scheme: light)" srcset="docs/.sphinx/_static/logos/juju-logo.png?raw=true">
   <img alt="Juju logo next to the text Canonical Juju" src="docs/.sphinx/_static/logos/juju-logo.png?raw=true" width="30%">
 </picture>
-
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/leyao-daily/juju)
 Juju is an open source application orchestration engine that enables any application operation (deployment, integration, lifecycle management) on any infrastructure (Kubernetes or otherwise) at any scale (development or production) in the same easy way (typically, one line of code), through special operators called ‘charms’.
 
 [![juju](https://snapcraft.io/juju/badge.svg)](https://snapcraft.io/juju)
